@@ -68,6 +68,28 @@ chrome.runtime.onMessage.addListener((command, sender, sendResponse) => {
       }
       break;
 
+    case 'fill_form_field':
+      if (command.selector && command.value !== undefined) {
+        console.log(`Attempting to fill field with selector: ${command.selector}`);
+        const inputElement = document.querySelector(command.selector);
+        if (inputElement) {
+          inputElement.value = command.value;
+          // Dispatch events to ensure frameworks like React or Vue recognize the change
+          inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+          inputElement.dispatchEvent(new Event('change', { bubbles: true }));
+          sendResponse({ status: 'Success', detail: `Filled field with selector: ${command.selector}` });
+        } else {
+          const errorMsg = `Could not find input field with selector: ${command.selector}`;
+          console.error(errorMsg);
+          sendResponse({ status: 'Error', detail: errorMsg });
+        }
+      } else {
+        const errorMsg = 'Fill command requires "selector" and "value" properties.';
+        console.error(errorMsg);
+        sendResponse({ status: 'Error', detail: errorMsg });
+      }
+      break;
+
     default:
       const errorMsg = `Unknown command action: ${command.action}`;
       console.error(errorMsg);
