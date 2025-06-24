@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "AI Browser Control",
+  "version": "0.1.0",
+  "description": "An AI-powered browser automation assistant, inspired by Nanobrowser.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Browser Control"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
