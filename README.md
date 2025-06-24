@@ -67,15 +67,19 @@ The extension will be installed and will automatically connect to the WebSocket 
 *   **Stable Two-Way Communication:** The connection between the server and extension is robust and has been tested across multiple sites.
 *   **Core Commands Implemented:**
     *   `navigate`: Go to a specific URL.
-    *   `list_interactive_elements`: Perceive all clickable items.
+    *   `list_interactive_elements`: Perceive all interactive elements, including links, buttons, and input fields.
     *   `click_element`: Act on a specific item.
+    *   `fill_form_field`: Type text into an input field or textarea.
+    *   `scroll_page`: Scroll the page down by one viewport height.
+    *   `get_current_url`: Return the current URL of the page.
+    *   `go_back`: Navigate to the previous page in the browser history.
     *   `read_page`: Read the full text content of the page for validation.
 *   **Perception-Action-Validation Loop:** The full loop has been successfully demonstrated and validated.
 
 ## Next Steps
 
-With the core framework in place, the next steps involve expanding the AI's toolkit:
+With a robust set of core commands implemented, the next steps will focus on tackling more complex challenges:
 
-*   Implement a `fill_form_field` command.
-*   Add more sophisticated validation checks.
-*   Explore more complex, multi-step tasks.
+*   **Complex Task Automation:** Attempt multi-step tasks like logging into websites, filling out multi-page forms, or navigating e-commerce checkout flows.
+*   **Advanced Perception:** Enhance perception to understand not just elements, but also their context and state (e.g., is a checkbox checked? which dropdown option is selected?).
+*   **Multi-Agent System:** Explore the original Nanobrowser vision of a multi-agent system (Planner, Navigator, Validator) for more autonomous and resilient task execution.

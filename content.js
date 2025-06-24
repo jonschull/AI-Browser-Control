@@ -34,15 +34,17 @@ chrome.runtime.onMessage.addListener((command, sender, sendResponse) => {
     case 'list_interactive_elements':
       console.log('Listing interactive elements...');
       const interactiveElements = [];
-      const selectors = 'a[href], button, input[type="submit"], input[type="button"], [role="button"], [role="link"]';
-      document.querySelectorAll(selectors).forEach((el, index) => {
-        // Check if the element is visible and not disabled
-        if (el.offsetParent !== null && !el.disabled) {
+      let elementId = 0;
+      // Expanded query to include buttons, links, inputs, and text areas
+      document.querySelectorAll('button, a, input, textarea, [role="button"], [role="textbox"]').forEach(element => {
+        if (isElementVisible(element)) {
+          // Use value for inputs, innerText for others
+          const text = element.value || element.innerText;
           interactiveElements.push({
-            id: index,
-            tag: el.tagName.toLowerCase(),
-            text: el.innerText.trim().split('\n')[0].substring(0, 150) || el.value || el.name || el.ariaLabel || '',
-            selector: generateUniqueSelector(el)
+            id: elementId++,
+            tag: element.tagName.toLowerCase(),
+            text: text ? text.trim() : '', // Handle elements with no text/value
+            selector: generateUniqueSelector(element)
           });
         }
       });
@@ -90,6 +92,20 @@ chrome.runtime.onMessage.addListener((command, sender, sendResponse) => {
       }
       break;
 
+    case 'scroll_page':
+      window.scrollBy(0, window.innerHeight);
+      sendResponse({ status: 'Success', detail: 'Scrolled down one page.' });
+      break;
+
+    case 'get_current_url':
+      sendResponse({ status: 'Success', data: window.location.href });
+      break;
+
+    case 'go_back':
+      window.history.back();
+      sendResponse({ status: 'Success', detail: 'Navigated back.' });
+      break;
+
     default:
       const errorMsg = `Unknown command action: ${command.action}`;
       console.error(errorMsg);
@@ -99,6 +115,15 @@ chrome.runtime.onMessage.addListener((command, sender, sendResponse) => {
   // Return true to keep the message channel open for asynchronous responses.
   return true;
 });
+
+/**
+ * Checks if an element is visible in the DOM.
+ * @param {Element} elem The element to check.
+ * @returns {boolean} True if the element is visible, false otherwise.
+ */
+function isElementVisible(elem) {
+  return !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
+}
 
 function generateUniqueSelector(element) {
     if (element.id) {
